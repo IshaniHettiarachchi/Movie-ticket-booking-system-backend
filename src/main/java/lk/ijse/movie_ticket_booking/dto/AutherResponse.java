@@ -3,23 +3,20 @@ package lk.ijse.movie_ticket_booking.dto;
 public class AutherResponse {
 
     private String token;
-    private String tokenType;
-    private Long userId;
     private String name;
     private String email;
-    private String role;
+
 
 public AutherResponse(){
 
 }
 
-public AutherResponse(String token, Long userId, String name, String email, String role) {
+public AutherResponse(String token, String name, String email) {
     this.token = token;
-    this.tokenType = "Bearer";
-    this.userId = userId;
     this.name = name;
     this.email = email;
-    this.role = role;
+
+
 }
 
     public String getToken() {
@@ -28,22 +25,6 @@ public AutherResponse(String token, Long userId, String name, String email, Stri
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -60,13 +41,5 @@ public AutherResponse(String token, Long userId, String name, String email, Stri
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }

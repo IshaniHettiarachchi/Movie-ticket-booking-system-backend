@@ -10,7 +10,7 @@ public class User {
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private long id;
+private Long id;
 
 
     @NotBlank(message = "Email is required")
@@ -23,7 +23,7 @@ private long id;
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private Role role = Role.CUSTOMER;
     private String name;
 
@@ -50,7 +50,7 @@ private long id;
         return name;
     }
 
-    public void setFullName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

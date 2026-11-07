@@ -1,6 +1,6 @@
 package lk.ijse.movie_ticket_booking.security;
 
-import lk.ijse.movie_ticket_booking.dto.AuthResponse;
+import lk.ijse.movie_ticket_booking.dto.AutherResponse;
 import lk.ijse.movie_ticket_booking.dto.LoginRequest;
 import lk.ijse.movie_ticket_booking.dto.RegisterRequest;
 import lk.ijse.movie_ticket_booking.entity.Role;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AuthService {
+public class AutherService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthService(
+    public AutherService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService) {
@@ -28,7 +28,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public AutherResponse register(RegisterRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
 
@@ -38,26 +38,27 @@ public class AuthService {
         }
 
         User user = new User();
-        user.setFullName(request.getName().trim());
+        user.setName(request.getName().trim());
         user.setEmail(email);
         user.setPassword(
                 passwordEncoder.encode(request.getPassword()));
 
-        // Public registration must never grant administrator privileges.
+
         user.setRole(Role.CUSTOMER);
 
         User savedUser = userRepository.save(user);
 
         String token = jwtService.generateToken(savedUser.getEmail());
 
-        return new AuthResponse(
+        return new AutherResponse(
                 token,
-                savedUser.getEmail(),
-                savedUser.getRole().name());
+                savedUser.getName(),
+                savedUser.getEmail()
+        );
     }
 
     @Transactional(readOnly = true)
-    public AuthResponse login(LoginRequest request) {
+    public AutherResponse login(LoginRequest request) {
 
         String email = request.getEmail().trim().toLowerCase();
 
@@ -74,10 +75,11 @@ public class AuthService {
 
         String token = jwtService.generateToken(user.getEmail());
 
-        return new AuthResponse(
+        return new AutherResponse(
                 token,
-                user.getEmail(),
-                user.getRole().name());
+                user.getName(),
+                user.getEmail()
+        );
     }
 }
 

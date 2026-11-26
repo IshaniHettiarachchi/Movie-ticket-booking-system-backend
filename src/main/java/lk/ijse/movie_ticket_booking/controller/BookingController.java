@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+@RestController
+@RequestMapping("/api/bookings")
+@CrossOrigin(origins = "http://localhost:5173")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -53,5 +57,12 @@ public class BookingController {
     @PatchMapping("/{id}/cancel")
     public Booking cancelBooking(@PathVariable Long id) {
         return bookingService.cancelBooking(id);
+    }
+
+    @GetMapping("/show/{showId}/unavailable-seats")
+    public List<String> getUnavailableSeats(
+            @PathVariable Long showId) {
+
+        return bookingService.getUnavailableSeats(showId);
     }
 }

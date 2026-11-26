@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -131,5 +132,40 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(BookingStatus.CANCELLED);
         return bookingRepository.save(booking);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getUnavailableSeats(Long showId) {
+
+
+        if (!showRepository.existsById(showId)) {
+            throw new IllegalArgumentException("Show not found");
+        }
+
+        List<Booking> bookings =
+                bookingRepository.findByShowIdAndStatusIn(
+                        showId,
+                        List.of(
+                                BookingStatus.PENDING,
+                                BookingStatus.CONFIRMED
+                        )
+                );
+
+        List<String> unavailableSeats = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+
+            String[] seats = booking.getSeatNumbers().split(",");
+
+            for (String seat : seats) {
+                if (!seat.trim().isEmpty()) {
+                    unavailableSeats.add(seat.trim());
+                }
+            }
+        }
+
+        return unavailableSeats.stream()
+                .distinct()
+                .toList();
     }
 }

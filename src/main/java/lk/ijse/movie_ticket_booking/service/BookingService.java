@@ -20,4 +20,7 @@ public interface BookingService {
     Booking updateBookingStatus(Long id, BookingStatus status);
 
     Booking cancelBooking(Long id);
+
+    List<String> getUnavailableSeats(Long showId);
 }
+

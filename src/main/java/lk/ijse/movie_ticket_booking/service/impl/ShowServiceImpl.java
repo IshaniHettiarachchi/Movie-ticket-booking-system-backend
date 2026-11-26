@@ -4,7 +4,10 @@ import lk.ijse.movie_ticket_booking.entity.Show;
 import lk.ijse.movie_ticket_booking.entity.ShowStatus;
 import lk.ijse.movie_ticket_booking.repository.ShowRepository;
 import lk.ijse.movie_ticket_booking.service.ShowService;
-
+import lk.ijse.movie_ticket_booking.entity.Movie;
+import lk.ijse.movie_ticket_booking.entity.Theatre;
+import lk.ijse.movie_ticket_booking.repository.MovieRepository;
+import lk.ijse.movie_ticket_booking.repository.TheatreRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +19,17 @@ import java.util.List;
 public class ShowServiceImpl implements ShowService {
 
     private final ShowRepository showRepository;
+    private final MovieRepository movieRepository;
+    private final TheatreRepository theatreRepository;
 
-    public ShowServiceImpl(ShowRepository showRepository) {
+    public ShowServiceImpl(
+            ShowRepository showRepository,
+            MovieRepository movieRepository,
+            TheatreRepository theatreRepository) {
+
         this.showRepository = showRepository;
+        this.movieRepository = movieRepository;
+        this.theatreRepository = theatreRepository;
     }
 
     @Override
@@ -43,9 +54,21 @@ public class ShowServiceImpl implements ShowService {
                     "Ticket price must be greater than zero");
         }
 
+        // Retrieve existing movie from database
+        Movie movie = movieRepository.findById(show.getMovie().getId())
+                .orElseThrow(() ->
+                        new RuntimeException("Movie not found"));
+
+        // Retrieve existing theatre from database
+        Theatre theatre = theatreRepository.findById(show.getTheatre().getId())
+                .orElseThrow(() ->
+                        new RuntimeException("Theatre not found"));
+
+        show.setMovie(movie);
+        show.setTheatre(theatre);
+
         return showRepository.save(show);
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<Show> getAllShows() {
@@ -82,8 +105,16 @@ public class ShowServiceImpl implements ShowService {
                     "Ticket price must be greater than zero");
         }
 
-        existingShow.setMovie(show.getMovie());
-        existingShow.setTheatre(show.getTheatre());
+        Movie movie = movieRepository.findById(show.getMovie().getId())
+                .orElseThrow(() ->
+                        new RuntimeException("Movie not found"));
+
+        Theatre theatre = theatreRepository.findById(show.getTheatre().getId())
+                .orElseThrow(() ->
+                        new RuntimeException("Theatre not found"));
+
+        existingShow.setMovie(movie);
+        existingShow.setTheatre(theatre);
         existingShow.setShowDate(show.getShowDate());
         existingShow.setShowTime(show.getShowTime());
         existingShow.setTicketPrice(show.getTicketPrice());

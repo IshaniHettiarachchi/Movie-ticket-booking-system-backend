@@ -35,6 +35,10 @@ public class SecurityConfig {
                                 "/api/theatres/**",
                                 "/api/shows/**"
                         ).permitAll()
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/api/bookings/show/*/unavailable-seats"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
 

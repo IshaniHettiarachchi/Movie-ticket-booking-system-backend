@@ -16,4 +16,9 @@ public interface BookingRepository
 
     List<Booking> findByUserIdAndStatus(
             Long userId, BookingStatus status);
+
+    List<Booking> findByShowIdAndStatusIn(
+            Long showId,
+            List<BookingStatus> statuses
+    );
 }
